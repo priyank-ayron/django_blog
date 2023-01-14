@@ -13,7 +13,11 @@ Home
             </div>
             <div class="col-sm-8">
                 <p>{{blog.blog_content|range_filter|linebreaks}}</p>
-                <a href="{% url 'App_Blog:blog_details' slug=blog.slug %}">Read More</a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'App_Blog:blog_details' slug=blog.slug %}">Read More</a>
+                {% else %}
+                    <a href="{% url 'App_Login:login' %}">Read More</a>
+                {% endif %}
                 <h6>Posted By: <a href="#">{{blog.author}}</a></h6>
                 <h6>{{ blog.liked_blog.count }} Likes | {{ blog.blog_comment.count }} Comments</h6>
             </div>
