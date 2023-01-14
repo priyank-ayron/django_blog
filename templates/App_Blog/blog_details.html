@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load custom_filters %}
+{% load crispy_forms_tags %}
+{% block title %}
+Blog Details
+{% endblock %}
+{% block body_block %}
+    <div class="row">
+        <div class="col-sm-6">
+            <h2>{{ blog.blog_title }}</h2>
+            <h4>Posted By: {{ blog.author }}</h4>
+            <h6><i>Published On: {{ blog.publish_date }}</i></h6>
+            <h6><i>Updated On: {{ blog.update_date }}</i></h6>
+            <h6>{{ blog.liked_blog.count }} Likes | {{ blog.blog_comment.count }} Comments</h6>
+        </div>
+        <div class="col-sm-6">
+            <img src="/media/{{blog.blog_image}}" title="{{blog.blog_title}}" alt="/media/{{blog.blog_title}}" width="50%">
+        </div>
+    </div>
+    <div class="col-sm-8">
+        <p>{{blog.blog_content|linebreaks}}</p>
+        <h6>Posted By: <a href="#">{{blog.author}}</a></h6>
+    </div>
+    <hr>
+    <br>
+    {% if not liked %}
+        <a  href="{% url 'App_Blog:liked_post' pk=blog.pk %}" style="color:green;">
+            <i class="fa fa-thumbs-o-up fa-2x"></i>
+        </a>
+        <h6 style="color:green;">Click to like this blog.</h6>
+    {% else %}
+        <a  href="{% url 'App_Blog:unliked_post' pk=blog.pk %}" style="color:red;">
+            <i class="fa fa-thumbs-o-down fa-2x"></i>
+        </a>
+        <h6 style="color:blue;">Click to dislike this blog.</h6>
+    {% endif %}
+    <br>
+    <div class="row">
+        <div class="col-sm-6">
+            <h5>Comments:</h5>
+            {% for comment in blog.blog_comment.all %}
+                <p><a href="#"> {{ comment.user }} </a></p>
+                <b>{{ comment.comment }}</b>
+                <h6><i> {{ comment.comment_date }} </i></h6>
+                <br>
+            {% endfor %}
+        </div>
+        <div class="col-sm-6">
+            <form method="post">
+                {{ comment_form | crispy }}
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary btn-sm">Comment</button>
+            </form>
+        </div>
+    </div>
+    <br><br><br>
+
+{% endblock %}
